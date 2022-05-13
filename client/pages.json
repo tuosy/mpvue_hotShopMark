@@ -1,0 +1,65 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarBackgroundColor": "#1296db"
+			}
+		},
+		{
+			"path": "pages/mark/mark",
+			"style": {
+				"navigationBarTitleText": "打卡",
+				"navigationBarBackgroundColor": "#1296db"
+			}
+		},
+		{
+			"path": "pages/list/list",
+			"style": {
+				"navigationBarTitleText": "列表",
+				"navigationBarBackgroundColor": "#1296db"
+			}
+		},
+		{
+			"path": "pages/person/person",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"navigationBarBackgroundColor": "#1296db"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "网红打卡小程序",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"backgroundColor": "#F8F8F8",
+		"color": "#2c2c2c",
+		"selectedColor": "#1296db",
+		"list": [
+			
+			{
+				"pagePath": "pages/mark/mark",
+				"iconPath": "static/img/mark.png",
+				"selectedIconPath": "static/img/sMark.png",
+				"text": "打卡"
+			},
+			{
+				"pagePath": "pages/list/list",
+				"iconPath": "static/img/list.png",
+				"selectedIconPath": "static/img/sList.png",
+				"text": "打卡列表"
+			},
+			{
+				"pagePath": "pages/person/person",
+				"iconPath": "static/img/person.png",
+				"selectedIconPath": "static/img/sPerson.png",
+				"text": "个人中心"
+			}	
+		]
+			
+	}
+}
