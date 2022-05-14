@@ -14,9 +14,9 @@
 			<input type="password" placeholder="请输入密码" v-model="password">
 		</view>
 		<button class="loginBtn" @click="login">登录</button>
-		<uni-popup ref="popup" type="message">
+		<!-- <uni-popup ref="popup" type="message">
 			<uni-popup-message type="error" :message="alterMessage" :duration="2000"></uni-popup-message>
-		</uni-popup>
+		</uni-popup> -->
 	</view>
 </view>	
 </template>
@@ -39,24 +39,25 @@
 		methods:{
 			back(){
 				uni.switchTab({
-					url: '/pages/mark/mark'
+					url: '/pages/person/person'
 				});
 			},
 			openMessage(message){
-				this.alterMessage = message
-				this.$refs.popup.open()
+				uni.showToast({
+					title: message,
+					duration: 1500,
+					icon:"error",
+					position:"center"
+				});
 			},
 			login(){
 				const {phone,password} = this
 				if(!phone){
 					this.openMessage("手机号不能为空！")
-					if(!password){
-						this.openMessage("密码不能为空！")
-					}
-				}else{
-					if(!this.rightPhone){
-						this.openMessage("输入的手机号错误！")
-					}
+				}else if(!password){
+					this.openMessage("密码不能为空！")
+				}else if(!this.rightPhone){
+					this.openMessage("输入的手机号错误！")
 				}
 			}
 		}

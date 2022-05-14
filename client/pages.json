@@ -1,31 +1,42 @@
 {
+	"easycom": {
+			"autoscan": true,
+			"custom": {
+				// uni-ui 规则如下配置
+				"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+			}
+		},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "登录",
-				"navigationBarBackgroundColor": "#1296db"
+				"navigationBarBackgroundColor": "#1296db",
+				"navigationBarTextStyle": "white"
 			}
 		},
 		{
 			"path": "pages/mark/mark",
 			"style": {
 				"navigationBarTitleText": "打卡",
-				"navigationBarBackgroundColor": "#1296db"
+				"navigationBarBackgroundColor": "#1296db",
+				"navigationBarTextStyle": "white"
 			}
 		},
 		{
 			"path": "pages/list/list",
 			"style": {
 				"navigationBarTitleText": "列表",
-				"navigationBarBackgroundColor": "#1296db"
+				"navigationBarBackgroundColor": "#1296db",
+				"navigationBarTextStyle": "white"
 			}
 		},
 		{
 			"path": "pages/person/person",
 			"style": {
 				"navigationBarTitleText": "个人中心",
-				"navigationBarBackgroundColor": "#1296db"
+				"navigationBarBackgroundColor": "#1296db",
+				"navigationBarTextStyle": "white"
 			}
 		}
 	],
