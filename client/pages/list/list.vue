@@ -1,85 +1,79 @@
 <template>
 	<view class="list">
 		<view class="search">
-			<input type="text" placeholder="输入商店名" v-model="keyword">
+			<input type="text" placeholder="输入商店名" v-model="keywords">
 			<button class="btn" @click="search">搜索</button>
 		</view>
 		<view class="space">
 		</view>
 		<ul class="mark_list">
-			<li>
-				 <img src="static/img/login_logo.jpg">
+			<li v-for="item in markedList" :key="item.t_shop_pk" v-show="!isShowList">
+				 <img :src="item.img_path">
 				  <view class="shopInfo">
-					<p class="msg_a">商店名商店名商店名商店名商店名</p>
-					<p class="msg_b">打卡日期</p>
-					<p class="msg_c">打卡地店</p>
-				  </view>
-			</li>
-			<li>
-				 <img src="static/img/login_logo.jpg">
-				  <view class="shopInfo">
-					<p class="msg_a">商店名商店名商店名商店名商店名</p>
-					<p class="msg_b">打卡日期</p>
-					<p class="msg_c">打卡地店</p>
-				  </view>
-			</li>
-			<li>
-				 <img src="static/img/login_logo.jpg">
-				  <view class="shopInfo">
-					<p class="msg_a">商店名商店名商店名商店名商店名</p>
-					<p class="msg_b">打卡日期</p>
-					<p class="msg_c">打卡地店</p>
-				  </view>
-			</li>
-			<li>
-				 <img src="static/img/login_logo.jpg">
-				  <view class="shopInfo">
-					<p class="msg_a">商店名商店名商店名商店名商店名</p>
-					<p class="msg_b">打卡日期</p>
-					<p class="msg_c">打卡地店</p>
-				  </view>
-			</li>
-			<li>
-				 <img src="static/img/login_logo.jpg">
-				  <view class="shopInfo">
-					<p class="msg_a">商店名商店名商店名商店名商店名</p>
-					<p class="msg_b">打卡日期</p>
-					<p class="msg_c">打卡地店</p>
-				  </view>
-			</li>
-			<li>
-				 <img src="static/img/login_logo.jpg">
-				  <view class="shopInfo">
-					<p class="msg_a">商店名商店名商店名商店名商店名</p>
-					<p class="msg_b">打卡日期</p>
-					<p class="msg_c">打卡地店</p>
+					<p class="msg_a">{{item.shop_name}}</p>
+					<p class="msg_b">{{item.insert_time}}</p>
+					<p class="msg_c">{{item.address}}</p>
 				  </view>
 			</li>
 		</ul>
+		<view class="msg_hint" v-show="!isShowList&&!markedList.length">
+			您目前没用打卡记录哟，请开始打卡吧！
+		</view>
+		<view class="msg_hint" v-show="isShowList">
+			{{markedSearch.msg}}
+		</view>
 	</view>
 </template>
 
 <script>
-	export default{
-		name:"list",
-		data(){
-			return{
-				keyword:"",
+import apiRequst from '@/api/index.js' 
+import {mapState} from 'vuex'
+export default{
+	data(){
+		return{
+			keywords:"",
+			isSearch:false
+		}
+	},
+	computed:{
+		...mapState(["markedList","markedSearch"]),
+		showList(){
+			if(this.keywords&&this.isSearch){
+				return this.markedSearch.data
+			}else{
+				return this.markedList
 			}
 		},
-		methods:{
-			search(){
-				if(!this.keyword){
-					uni.showToast({
-						title: '商店名不能为空',
-						duration: 1000,
-						icon:"error",
-						position:"center"
-					});
-				}
-			}
+		isShowList(){
+			return this.markedSearch.code&&this.keywords&&this.isSearch
 		}
-	}
+	},
+	methods:{
+		search(){
+			this.isSearch=true
+			if(!this.keywords){
+				uni.showToast({
+					title: '商店名不能为空',
+					duration: 1000,
+					icon:"error",
+					position:"center"
+				});
+			}else{
+				this.$store.dispatch("getMarkedSearch",this.keywords)
+			}
+		},
+		
+	},
+	watch:{
+		keywords(){
+			this.isSearch=false
+		}
+	},
+	onLoad() {
+				this.queryList();
+				this.$store.dispatch('getMarkedList')
+			}
+}
 </script>
 
 <style scoped lang="less">
@@ -110,9 +104,10 @@
 					padding-left: 10px;
 					box-sizing: border-box;
 					border-right: none;
+					background-color: #fff
 				}
 				.btn{
-					height: 40px;
+					height: 38px;
 					width: 20%;
 					text-align: center;
 					line-height: 40px;
@@ -124,6 +119,10 @@
 					border-bottom-right-radius: 5px;
 					border-top-left-radius: 0px;
 					border-bottom-left-radius: 0px;
+					box-shadow:2px 2px 2px #000 ;
+				}
+				.btn:active{
+					box-shadow: 2px 2px 2px #f2f2f2;
 				}
 			}
 			.space{
@@ -171,6 +170,15 @@
 						}
 					}
 				}
+			}
+			.msg_hint{
+				position: absolute;
+				top: 100px;
+				width: 100%;
+				line-height: 30px;
+				text-align: center;
+				font-size: 1.2rem;
+				color: #aaa;
 			}
 		}
 	}

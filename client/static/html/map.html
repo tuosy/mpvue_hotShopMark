@@ -4,7 +4,12 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 		<title>Document</title>
+		<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+		<script src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=MKMXQ25rxyb1Uved60f8nHHrHszqzNqP"></script>
+		<!-- uni 的 SDK，必须引用。 --> 
+		<script type="text/javascript" src="//js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.0.1.52.js"></script>
 		<style>
 			html{
 				margin: 0px;
@@ -23,7 +28,6 @@
 	<body>
 		<div id="container"></div>
 	</body>
-	<script src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=MKMXQ25rxyb1Uved60f8nHHrHszqzNqP"></script>
 	<script>
 		// 禁止地图旋转和倾斜可以通过配置项进行设置
 		var map = new BMapGL.Map("container",{
@@ -33,14 +37,11 @@
 		// // 创建地图实例
 		let point = new BMapGL.Point(103.331398, 30.897445);
 		// 设置中心点、地图级别
-		map.centerAndZoom(point, 12);
+		map.centerAndZoom(point, 15);
 		map.enableScrollWheelZoom(true);
 		map.setHeading(64.5);   //设置地图旋转角度
 		map.setTilt(73);       //设置地图的倾斜角度
-		// 获取当前坐标（回调函数）
 		var geolocation = new BMapGL.Geolocation();
-		// 开启SDK辅助定位
-		geolocation.enableSDKLocation();
 		geolocation.getCurrentPosition(function(r){
 			if(this.getStatus() == BMAP_STATUS_SUCCESS){
 				var mk = new BMapGL.Marker(r.point);
@@ -50,8 +51,16 @@
 			}
 			else {
 				console.log('failed' + this.getStatus());
-			}        
+			} 
 		});
-		
+		document.addEventListener('UniAppJSBridgeReady', function() {
+		    uni.postMessage({
+		    	data:{
+		    		lng: "r.point.lng",
+		    		lat: "r.point.lat"
+		    	}
+		    }); 
+			 
+		});
 	</script>
 </html>

@@ -11,7 +11,7 @@
 		</view>
 		<view class="account">
 			<h1>密码</h1>
-			<input type="password" placeholder="请输入密码" v-model="password">
+			<input type="password" placeholder="请输入密码" v-model="pwd">
 		</view>
 		<button class="loginBtn" @click="login">登录</button>
 		<!-- <uni-popup ref="popup" type="message">
@@ -22,18 +22,22 @@
 </template>
 
 <script>
+	import apiRequst from '@/api/index.js'
 	export default{
 		name:"login",
 		data(){
 			return{
 				phone:"",
-				password:'',
-				alterMessage:''
+				pwd:''
+				// alterMessage:''
 			}
 		},
 		computed:{
 			rightPhone(){
 				return /^1\d{10}$/.test(this.phone)
+			},
+			rightPwd(){
+				return /^[A-Za-z0-9]{4,12}$/.test(this.pwd)
 			}
 		},
 		methods:{
@@ -51,14 +55,39 @@
 				});
 			},
 			login(){
-				const {phone,password} = this
+				const {phone,pwd} = this
 				if(!phone){
 					this.openMessage("手机号不能为空！")
-				}else if(!password){
+				}else if(!pwd){
 					this.openMessage("密码不能为空！")
 				}else if(!this.rightPhone){
 					this.openMessage("输入的手机号错误！")
+				}else if(!this.rightPwd){
+					this.openMessage("密码只能为4~12位的字母或数字")
+				}else{
+					apiRequst.reqLogin({phone,pwd}).then(res=>{
+						console.log(res)
+						if(res.code===0){
+							this.loginSuccess(res)
+						}else{
+							this.openMessage(res.msg)
+						}
+					})
 				}
+			},
+			loginSuccess(res) {
+				//清空用户信息
+				uni.removeStorageSync("loginUser");
+				// 将用户信息进行本地存储
+				uni.setStorage({
+					data: res.data,
+					key: "loginUser"
+				});
+				this.$store.dispatch("recordUser",res.data)
+				// 跳转首页
+				uni.switchTab({
+					url: "/pages/mark/mark"
+				})
 			}
 		}
 	}

@@ -1,70 +1,78 @@
 <template>
 	<view class="mark">
 		<view class="map">
-			<web-view src="/static/html/map.html" class="mapPage"></web-view>
+			<web-view src="/static/html/map.html" class="mapPage" @message="getPosition" ></web-view>
 		</view>
 		<view class="main">
 			<view class="info">
-				<input type="text" placeholder="搜索附近网红门店">
-				<button class="searchBtn">搜索</button>
+				<input type="text" placeholder="搜索附近网红门店" v-model="keywords">
+				<button class="searchBtn" @click="search">搜索</button>
 			</view>
-			<ul class="shopList">
-				<li>
-					<img src="static/img/login_logo.jpg">
+			<ul class="shopList" v-show="!isShowList">
+				<li v-for="shop in showList" :key="shop.t_shop_pk">
+					<img :src="shop.img_path">
 					<view class="msg">
-						<h2>商店名称</h2>
-						<p>成都市双流区￥￥￥￥</p>
-					</view>
-					<button class="markBtn">去打卡</button>
-				</li>
-				<li>
-					<img src="static/img/login_logo.jpg">
-					<view class="msg">
-						<h2>商店名称</h2>
-						<p>成都市双流区￥￥￥￥</p>
-					</view>
-					<button class="markBtn">去打卡</button>
-				</li>
-				<li>
-					<img src="static/img/login_logo.jpg">
-					<view class="msg">
-						<h2>商店名称</h2>
-						<p>成都市双流区￥￥￥￥</p>
-					</view>
-					<button class="markBtn">去打卡</button>
-				</li>
-				<li>
-					<img src="static/img/login_logo.jpg">
-					<view class="msg">
-						<h2>商店名称</h2>
-						<p>成都市双流区￥￥￥￥</p>
-					</view>
-					<button class="markBtn">去打卡</button>
-				</li>
-				<li>
-					<img src="static/img/login_logo.jpg">
-					<view class="msg">
-						<h2>商店名称</h2>
-						<p>成都市双流区￥￥￥￥</p>
-					</view>
-					<button class="markBtn">去打卡</button>
-				</li>
-				<li>
-					<img src="static/img/login_logo.jpg">
-					<view class="msg">
-						<h2>商店名称</h2>
-						<p>成都市双流区￥￥￥￥</p>
+						<h2>{{shop.shop_name}}</h2>
+						<p>{{shop.address}}</p>
 					</view>
 					<button class="markBtn">去打卡</button>
 				</li>
 			</ul>
+			<view v-show="isShowList" class="error_hint">{{searchShop.msg}}</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {mapGetters,mapState} from 'vuex'
 	export default{
+		data(){
+			return{
+				keywords:"",
+				isSearch:false,
+			}
+		},
+		computed:{
+			...mapGetters(['getNearShop']),
+			...mapState(["searchShop"]),
+			showList(){
+				if(this.keywords&&this.isSearch){
+					return this.searchShop.data
+				}else{
+					return this.getNearShop
+				}
+			},
+			isShowList(){
+				return this.searchShop.code&&this.keywords&&this.isSearch
+			}
+		},
+		methods:{
+			getPosition(event) {
+				console.log("接收到消息：" + JSON.stringify(event.detail.data));
+				console.log("ok")
+			},
+			search(){
+				this.isSearch=true
+				if(this.keywords){
+					this.$store.dispatch("getSearchShop",this.keywords)
+				}else{
+					uni.showToast({
+						title: '商店名不能为空',
+						duration: 1000,
+						icon:"error",
+						position:"center"
+					});
+				}				
+			}
+			
+		},
+		watch:{
+			keywords(){
+				this.isSearch=false
+			}
+		},
 		onLoad() {
+			this.$store.dispatch("getShopList")
 		}
 	}
 </script>
@@ -90,7 +98,7 @@
 		.main{
 			position: absolute;
 			width: 100%;
-			height: 60%;
+			height: 57%;
 			overflow: scroll;
 			z-index: 100;
 			.info{
@@ -126,6 +134,10 @@
 					border-bottom-right-radius: 5px;
 					border-top-left-radius: 0px;
 					border-bottom-left-radius: 0px;
+					box-shadow:2px 2px 2px #000 ;
+				}
+				.searchBtn:active{
+					box-shadow:2px 2px 2px #f2f2f2 ;
 				}
 			}
 			.shopList{
@@ -154,9 +166,21 @@
 						h2{
 							font-size: 1.1rem;
 							line-height: 25px;
+							text-overflow: ellipsis;
+							overflow: hidden;
+							white-space: nowrap;
+						}
+						h2:hover{
+							color: #1296db;
 						}
 						p{
+							text-overflow: ellipsis;
+							overflow: hidden;
+							white-space: nowrap;
 							color: #aaa;
+							line-height: 25px;
+							width: 90%;
+							font-size: 0.9rem;
 						}
 					}
 					.markBtn{
@@ -169,6 +193,15 @@
 						border-radius: 30px;
 					}
 				}
+			}
+			.error_hint{
+				width: 100%;
+				height: 30px;
+				margin-top: 50px;
+				line-height: 30px;
+				text-align: center;
+				font-size: 1.2rem;
+				color: #aaa;
 			}
 		}
 	}
